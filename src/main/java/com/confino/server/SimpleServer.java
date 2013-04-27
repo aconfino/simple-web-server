@@ -12,6 +12,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 public class SimpleServer {
+	
+	private static final String newline = System.getProperty("line.separator");
 
     public static void main(String[] args) throws Exception {
     	System.out.println("Starting server...");
@@ -25,14 +27,16 @@ public class SimpleServer {
 
     static class MyHandler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
-        	System.out.println("");
-        	System.out.println("Protocol: " + t.getProtocol());
-        	System.out.println("Request URI: " + t.getRequestURI().toASCIIString());
-        	getHeaderInfo(t);
-        	System.out.println("");
+        	StringBuilder builder = new StringBuilder();
+        	builder.append(newline);
+        	builder.append("Protocol: " + t.getProtocol() + newline);
+        	builder.append("Request URI: " + t.getRequestURI().toASCIIString() + newline);
+        	builder.append(getHeaderInfo(t));
+        	builder.append(newline);
         	InputStream requestBody = t.getRequestBody();
-        	System.out.println("Request body: " + IOUtils.toString(requestBody));
-        	String response = "This is the response";
+        	builder.append("Request body: " + IOUtils.toString(requestBody) + newline);
+        	String response = builder.toString();
+        	System.out.println(response);
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -40,20 +44,23 @@ public class SimpleServer {
         }
     }
     
-    public static void getHeaderInfo(HttpExchange t){
+    public static String getHeaderInfo(HttpExchange t){
     	Headers headers = t.getRequestHeaders();
-    	printInfo(headers, "HOST");
-    	printInfo(headers, "Accept-encoding");
-    	printInfo(headers, "Connection");
-    	printInfo(headers, "Accept-language");
-    	printInfo(headers, "User-agent");
-    	printInfo(headers, "Accept");
+    	StringBuilder builder = new StringBuilder();
+    	builder.append(printInfo(headers, "HOST"));
+    	builder.append(printInfo(headers, "Accept-encoding"));
+    	builder.append(printInfo(headers, "Connection"));
+    	builder.append(printInfo(headers, "Accept-language"));
+    	builder.append(printInfo(headers, "User-agent"));
+    	builder.append(printInfo(headers, "Accept"));
+    	return builder.toString();
     }
     
-    public static void printInfo(Headers headers, String key){
+    public static String printInfo(Headers headers, String key){
     	if (headers.containsKey(key)){
-    		System.out.println(headers.get(key).toString());
-    	}
+    		return headers.get(key).toString() + newline;
+    	} else
+    		return "";
     }
 
 }
