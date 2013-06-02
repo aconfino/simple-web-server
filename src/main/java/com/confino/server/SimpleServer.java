@@ -14,14 +14,19 @@ import com.sun.net.httpserver.HttpServer;
 public class SimpleServer {
 	
 	private static final String newline = System.getProperty("line.separator");
+	private static Integer port = 8000;
 
     public static void main(String[] args) throws Exception {
     	System.out.println("Starting server...");
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+    	String portArgument = System.getProperty("port");
+    	if (portArgument != null){
+    		port = new Integer(portArgument);
+    	}
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/test", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
-        System.out.println("Server is ready.");
+        System.out.println("Server is ready.  Lisening of port " + port);
         System.out.println("");
     }
 
