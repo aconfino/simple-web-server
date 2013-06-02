@@ -38,6 +38,29 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- example -->
+			<plugin>
+				<groupId>com.confino</groupId>
+				<artifactId>notifier-maven-plugin</artifactId>
+				<version>1.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>notify-endpoint</id>
+						<phase>install</phase>
+						<configuration>
+							<endpoints>
+								<param>http://localhost:8000/test</param>
+								<param>http://localhost:8001/test</param>
+							</endpoints>
+							<!-- default is true -->
+							<failBuild>false</failBuild>
+						</configuration>
+						<goals>
+							<goal>notify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
